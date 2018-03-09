@@ -1,6 +1,8 @@
 var pic = document.getElementById("vimage");
 var clearButton = document.getElementById("clear");
 const initDotRad = 30;
+const initDotColor = "red";
+var dots = [];
 
 const clear = function(){
     while (pic.firstChild){
@@ -19,52 +21,57 @@ var makeDot = function(x, y){
     return c;
 }
 
-var dot = {
-    var x;
-    var y;
-    var radius;
-    var color;
-    var display = function(){
-	drawDot(
+class dot {
+    constructor(x, y){
+	this.xcor = x;
+	this.ycor = y;
+	this.radius = initDotRad;
+	this.dotColor = initDotColor;
     }
-    var getX = function(){
-	return x;
+    get x(){ //usage: dotObject.x will return xcor of that dotObject
+	return this.xcor;
     }
-    var getY = function(){
-	return y;
+    get y(){
+	return this.ycor;
     }
-    var setX = function(newX){
-	x = newX;
+    setX(newX){
+	this.xcor = newX;
     }
-    var setY = function(newY){
-	y = newY;
+    setY(newY){
+	this.ycor = newY;
     }
-    var getColor = function(){
-	return color;
+    get color(){
+	return this.dotColor;
+    }
+    setColor(newColor){
+	this.dotColor = newColor;
+    }
+    drawDot(){
+	var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+	c.setAttribute("cx", this.xcor);
+	c.setAttribute("cy", this.ycor);
+	c.setAttribute("r", this.radius);
+	c.setAttribute("fill", this.dotColor);
+	c.setAttribute("stroke", "black");
+	
+	c.addEventListener("click", changeOrDie, true);
+	c.addEventListener("click", stop);
+
+	pic.appendChild(c);
     }
 }
 
-var drawDot = function(e, x = -1, y = -1){ //default values OP
-    if (x == -1 || y == -1){ //new dot
-	x = e.offsetX;
-	y = e.offsetY;
-    }
-
-    var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c.setAttribute("cx", x);
-    c.setAttribute("cy", y);
-    c.setAttribute("r", 30);
-    c.setAttribute("fill", "red");
-    c.setAttribute("stroke", "black");
-    
-    c.addEventListener("click", changeOrDie, true);
-    c.addEventListener("click", stop);
-
-    pic.appendChild(c);
+var newDot = function (e){
+    var createdDot = new dot(e.offsetX, e.offsetY);
+    createdDot.drawDot();
+    dots.push(createdDot);
 }
 
-var changeOrDie = function(e){ //can this be done without e but still use drawDot?
-    if(this.getAttribute("fill") == "red"){ //change
+//Shaina, can you make this function actually change the dot object?
+//Right now, it is still using non-object stuff to change color
+//
+var changeOrDie = function(e){ 
+    if(this.getAttribute("fill") == "red"){
 	this.setAttribute("fill", "blue");
     } else { //teleport
 	var x = Math.random() * 500;
@@ -79,4 +86,4 @@ var stop = function(ev){
 }
 
 clearButton.addEventListener("click", clear);
-pic.addEventListener("click", drawDot);
+pic.addEventListener("click", newDot);
