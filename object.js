@@ -48,6 +48,9 @@ class dot {
     this.object.setAttribute("fill", newColor);
 	this.dotColor = newColor;
     }
+    die() {
+    	this.object.remove();
+    }
     drawDot(){
 	var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 	c.setAttribute("cx", this.xcor);
@@ -82,7 +85,7 @@ var changeOrDie = function(e){
     } else { //teleport
 	var x = Math.random() * 500;
 	var y = Math.random() * 500;
-	this.remove();
+	dots[place].die();
 	var createdDot = new dot(x, y);
 	createdDot.drawDot();
 	dots.push(createdDot);
