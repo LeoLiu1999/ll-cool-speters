@@ -27,6 +27,7 @@ class dot {
 	this.ycor = y;
 	this.radius = initDotRad;
 	this.dotColor = initDotColor;
+	this.object = null;
     }
     get x(){ //usage: dotObject.x will return xcor of that dotObject
 	return this.xcor;
@@ -40,10 +41,11 @@ class dot {
     setY(newY){
 	this.ycor = newY;
     }
-    get color(){
+    getcolor(){
 	return this.dotColor;
     }
     setColor(newColor){
+    this.object.setAttribute("fill", newColor);
 	this.dotColor = newColor;
     }
     drawDot(){
@@ -57,7 +59,10 @@ class dot {
 	c.addEventListener("click", changeOrDie, true);
 	c.addEventListener("click", stop);
 
+	c.setAttribute("place", dots.length);
+
 	pic.appendChild(c);
+	this.object=c;
     }
 }
 
@@ -71,13 +76,16 @@ var newDot = function (e){
 //Right now, it is still using non-object stuff to change color
 //
 var changeOrDie = function(e){ 
-    if(this.getAttribute("fill") == "red"){
-	this.setAttribute("fill", "blue");
+	var place = this.getAttribute("place")//So we can fetch the right object
+    if(dots[place].getcolor() == "red"){
+		dots[place].setColor("blue");
     } else { //teleport
 	var x = Math.random() * 500;
 	var y = Math.random() * 500;
-	drawDot(e, x, y);
 	this.remove();
+	var createdDot = new dot(x, y);
+	createdDot.drawDot();
+	dots.push(createdDot);
     }
 }
 
